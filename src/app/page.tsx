@@ -50,7 +50,7 @@ export default function Home() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center bg-black text-white cursor-pointer select-none"
+      className="min-h-screen flex items-center justify-center bg-white text-black cursor-pointer select-none"
       onClick={handleClick}
     >
       <div className="w-full h-full flex items-center justify-center">
