@@ -8,12 +8,39 @@ export default function Home() {
   const [isLocked, setIsLocked] = useState(false);
 
   useEffect(() => {
-    fetch("/data.txt")
-      .then((response) => response.text())
-      .then((text) => {
-        const wordList = text.split("\n").flatMap((line) => line.split("、"));
-        setWords(wordList.filter((word) => word.trim() !== ""));
-      });
+    const fetchWords = async () => {
+      try {
+        // data.txt와 data2.txt를 동시에 불러오기
+        const [data1Response, data2Response] = await Promise.all([
+          fetch("/data.txt"),
+          fetch("/data2.txt"),
+        ]);
+
+        const [data1Text, data2Text] = await Promise.all([
+          data1Response.text(),
+          data2Response.text(),
+        ]);
+
+        // 두 파일의 단어들을 합치기
+        const wordList1 = data1Text
+          .split("\n")
+          .flatMap((line) => line.split("、"));
+        const wordList2 = data2Text
+          .split("\n")
+          .flatMap((line) => line.split("、"));
+
+        // 중복 제거 및 빈 문자열 필터링
+        const combinedWords = [...new Set([...wordList1, ...wordList2])].filter(
+          (word) => word.trim() !== ""
+        );
+
+        setWords(combinedWords);
+      } catch (error) {
+        console.error("Error loading words:", error);
+      }
+    };
+
+    fetchWords();
   }, []);
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -52,7 +79,7 @@ export default function Home() {
     if (!word) return "min(25vw,25vh)";
     const length = word.length;
     if (length <= 3) return "min(35vw,35vh)";
-    if (length <= 6) return "min(30vw,30vh)";
+    if (length <= 4) return "min(30vw,30vh)";
     return "min(25vw,25vh)";
   };
 
