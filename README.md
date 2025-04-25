@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Show Text
 
-## Getting Started
+간단한 텍스트 표시 앱입니다. 일본어 단어를 화면에 크게 표시하고 좌우 클릭으로 단어를 넘길 수 있습니다.
 
-First, run the development server:
+## 기능
+
+- 일본어 단어를 화면에 크게 표시
+- 단어 길이에 따른 자동 크기 조정
+  - 3글자 이하: 35vw,35vh
+  - 4-6글자: 30vw,30vh
+  - 7글자 이상: 25vw,25vh
+- 좌우 클릭으로 단어 이동
+- 화면 중앙 클릭으로 잠금/잠금 해제
+- ESC 키로 잠금 해제
+- 두 줄로 표시될 경우 자동 줄바꿈
+- 현재 단어 위치 표시 (예: 1/100)
+
+## 사용 방법
+
+1. 좌측 클릭: 이전 단어
+2. 우측 클릭: 다음 단어
+3. 중앙 클릭: 화면 잠금/잠금 해제
+4. ESC 키: 잠금 해제
+
+## 기술 스택
+
+- Next.js
+- TypeScript
+- Tailwind CSS
+
+## 설치 및 실행
 
 ```bash
+# 의존성 설치
+npm install
+
+# 개발 서버 실행
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 데이터 형식
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+`data.txt` 파일에 일본어 단어를 입력하세요. 각 단어는 `、`로 구분됩니다.
