@@ -50,7 +50,7 @@ export default function Home() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center bg-white text-black cursor-pointer select-none"
+      className="min-h-screen flex items-center justify-center bg-white text-black cursor-pointer select-none relative"
       onClick={handleClick}
     >
       <div className="w-full h-full flex items-center justify-center">
@@ -62,6 +62,9 @@ export default function Home() {
             </div>
           )}
         </div>
+      </div>
+      <div className="absolute bottom-4 right-4 text-sm text-gray-500">
+        {currentIndex + 1}/{words.length}
       </div>
     </div>
   );
