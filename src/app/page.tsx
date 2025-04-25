@@ -48,14 +48,25 @@ export default function Home() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  const getTextSize = (word: string | undefined) => {
+    if (!word) return "min(25vw,25vh)";
+    const length = word.length;
+    if (length <= 4) return "min(35vw,35vh)";
+    if (length <= 6) return "min(30vw,30vh)";
+    return "min(25vw,25vh)";
+  };
+
   return (
     <div
       className="min-h-screen flex items-center justify-center bg-white text-black cursor-pointer select-none relative"
       onClick={handleClick}
     >
       <div className="w-full h-full flex items-center justify-center px-16">
-        <div className="text-[min(25vw,25vh)] font-bold text-center p-8 break-words select-none">
-          {words[currentIndex]}
+        <div
+          className={`font-bold text-center p-8 break-words select-none`}
+          style={{ fontSize: getTextSize(words[currentIndex]) }}
+        >
+          {words[currentIndex] || "로딩 중..."}
           {isLocked && (
             <div className="text-sm mt-4">
               화면이 잠겼습니다. 가운데를 다시 클릭하여 잠금을 해제하세요.
@@ -64,7 +75,7 @@ export default function Home() {
         </div>
       </div>
       <div className="absolute bottom-4 right-4 text-sm text-gray-500">
-        {currentIndex + 1}/{words.length}
+        {words.length > 0 ? `${currentIndex + 1}/${words.length}` : "0/0"}
       </div>
     </div>
   );
