@@ -53,8 +53,8 @@ export default function Home() {
       className="min-h-screen flex items-center justify-center bg-white text-black cursor-pointer select-none relative"
       onClick={handleClick}
     >
-      <div className="w-full h-full flex items-center justify-center">
-        <div className="text-[min(20vw,20vh)] font-bold text-center p-8 break-keep select-none">
+      <div className="w-full h-full flex items-center justify-center px-16">
+        <div className="text-[min(25vw,25vh)] font-bold text-center p-8 break-keep select-none">
           {words[currentIndex]}
           {isLocked && (
             <div className="text-sm mt-4">
