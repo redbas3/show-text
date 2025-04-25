@@ -64,9 +64,12 @@ export default function Home() {
       <div className="w-full h-full flex items-center justify-center px-16">
         <div
           className={`font-bold text-center p-8 break-words select-none`}
-          style={{ fontSize: getTextSize(words[currentIndex]) }}
+          style={{
+            fontSize: getTextSize(words[currentIndex]),
+            lineHeight: "1.2",
+          }}
         >
-          {words[currentIndex] || "로딩 중..."}
+          {words[currentIndex] || "Loading..."}
           {isLocked && (
             <div className="text-sm mt-4">
               화면이 잠겼습니다. 가운데를 다시 클릭하여 잠금을 해제하세요.
