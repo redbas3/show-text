@@ -54,7 +54,7 @@ export default function Home() {
       onClick={handleClick}
     >
       <div className="w-full h-full flex items-center justify-center px-16">
-        <div className="text-[min(25vw,25vh)] font-bold text-center p-8 break-keep select-none">
+        <div className="text-[min(25vw,25vh)] font-bold text-center p-8 break-words select-none">
           {words[currentIndex]}
           {isLocked && (
             <div className="text-sm mt-4">
