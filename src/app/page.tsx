@@ -51,7 +51,7 @@ export default function Home() {
   const getTextSize = (word: string | undefined) => {
     if (!word) return "min(25vw,25vh)";
     const length = word.length;
-    if (length <= 4) return "min(35vw,35vh)";
+    if (length <= 3) return "min(35vw,35vh)";
     if (length <= 6) return "min(30vw,30vh)";
     return "min(25vw,25vh)";
   };
