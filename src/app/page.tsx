@@ -1,111 +1,83 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { readTextFile } from "@/utils/fileUtils";
 
 export default function Home() {
-  const [words, setWords] = useState<string[]>([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isLocked, setIsLocked] = useState(false);
+  const router = useRouter();
+  const [problemSets, setProblemSets] = useState<
+    { id: string; title: string }[]
+  >([]);
 
   useEffect(() => {
-    const fetchWords = async () => {
+    // 로컬 스토리지에서 문제집 목록 불러오기
+    const savedProblemSets = localStorage.getItem("problemSets");
+    if (savedProblemSets) {
       try {
-        // data.txt와 data2.txt를 동시에 불러오기
-        const [data1Response, data2Response] = await Promise.all([
-          fetch("/data.txt"),
-          fetch("/data2.txt"),
-        ]);
-
-        const [data1Text, data2Text] = await Promise.all([
-          data1Response.text(),
-          data2Response.text(),
-        ]);
-
-        // 두 파일의 단어들을 합치기
-        const wordList1 = data1Text
-          .split("\n")
-          .flatMap((line) => line.split("、"));
-        const wordList2 = data2Text
-          .split("\n")
-          .flatMap((line) => line.split("、"));
-
-        // 중복 제거 및 빈 문자열 필터링
-        const combinedWords = [...new Set([...wordList1, ...wordList2])].filter(
-          (word) => word.trim() !== ""
-        );
-
-        setWords(combinedWords);
+        const parsedProblemSets = JSON.parse(savedProblemSets);
+        setProblemSets(parsedProblemSets);
       } catch (error) {
-        console.error("Error loading words:", error);
+        console.error("Failed to parse problemSets from localStorage:", error);
+        initializeProblemSets();
       }
-    };
-
-    fetchWords();
-  }, []);
-
-  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const { clientX } = e;
-    const windowWidth = window.innerWidth;
-    const third = windowWidth / 3;
-
-    if (isLocked) {
-      if (clientX > third && clientX < third * 2) {
-        setIsLocked(false);
-      }
-      return;
-    }
-
-    if (clientX < third) {
-      setCurrentIndex((prev) => (prev > 0 ? prev - 1 : words.length - 1));
-    } else if (clientX > third * 2) {
-      setCurrentIndex((prev) => (prev < words.length - 1 ? prev + 1 : 0));
     } else {
-      setIsLocked(true);
+      initializeProblemSets();
     }
-  };
-
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key === "Escape") {
-      setIsLocked(false);
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  const getTextSize = (word: string | undefined) => {
-    if (!word) return "min(25vw,25vh)";
-    const length = word.length;
-    if (length <= 3) return "min(35vw,35vh)";
-    if (length <= 4) return "min(30vw,30vh)";
-    return "min(25vw,25vh)";
+  const initializeProblemSets = () => {
+    // 초기 데이터 로드
+    const initialProblemSets = [
+      { id: "data1", title: "Data1" },
+      { id: "data2", title: "Data2" },
+    ];
+    setProblemSets(initialProblemSets);
+    localStorage.setItem("problemSets", JSON.stringify(initialProblemSets));
+
+    // 각 파일의 내용을 로컬 스토리지에 저장
+    Promise.all([readTextFile("/data1.txt"), readTextFile("/data2.txt")])
+      .then(([data1, data2]) => {
+        localStorage.setItem("data1", data1);
+        localStorage.setItem("data2", data2);
+      })
+      .catch((error) => {
+        console.error("Failed to load text files:", error);
+      });
+  };
+
+  const handleUseProblemSet = (id: string) => {
+    router.push(`/problem-sets?id=${id}`);
   };
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center bg-white text-black cursor-pointer select-none relative"
-      onClick={handleClick}
-    >
-      <div className="w-full h-full flex items-center justify-center px-16">
-        <div
-          className={`font-bold text-center p-8 break-words select-none`}
-          style={{
-            fontSize: getTextSize(words[currentIndex]),
-            lineHeight: "1.2",
-          }}
-        >
-          {words[currentIndex] || "Loading..."}
-          {isLocked && (
-            <div className="text-sm mt-4">
-              화면이 잠겼습니다. 가운데를 다시 클릭하여 잠금을 해제하세요.
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-2xl font-bold mb-6">リスト</h1>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {problemSets.map((problemSet) => (
+          <div
+            key={problemSet.id}
+            className="border rounded-lg p-4 hover:shadow-lg transition-shadow"
+          >
+            <h2 className="text-xl font-semibold mb-4">{problemSet.title}</h2>
+            <div className="flex space-x-2">
+              <button
+                onClick={() => handleUseProblemSet(problemSet.id)}
+                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+              >
+                使用
+              </button>
+              <Link
+                href={`/problem-sets/${problemSet.id}`}
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              >
+                編集
+              </Link>
             </div>
-          )}
-        </div>
-      </div>
-      <div className="absolute bottom-4 right-4 text-sm text-gray-500">
-        {words.length > 0 ? `${currentIndex + 1}/${words.length}` : "0/0"}
+          </div>
+        ))}
       </div>
     </div>
   );
