@@ -7,24 +7,9 @@ export default function ProblemSetDetailPage() {
   const params = useParams();
   const router = useRouter();
   const [content, setContent] = useState("");
-  const [title, setTitle] = useState("");
   const problemSetId = params.id as string;
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedProblems, setEditedProblems] = useState<Problem[]>([]);
 
   useEffect(() => {
-    // 로컬 스토리지에서 문제집 목록 불러오기
-    const savedProblemSets = localStorage.getItem("problemSets");
-    if (savedProblemSets) {
-      const problemSets = JSON.parse(savedProblemSets);
-      const currentProblemSet = problemSets.find(
-        (set: { id: string }) => set.id === problemSetId
-      );
-      if (currentProblemSet) {
-        setTitle(currentProblemSet.title);
-      }
-    }
-
     // 로컬 스토리지에서 내용 불러오기
     const savedContent = localStorage.getItem(problemSetId);
     if (savedContent) {
