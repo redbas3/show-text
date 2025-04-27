@@ -7,9 +7,24 @@ export default function ProblemSetDetailPage() {
   const params = useParams();
   const router = useRouter();
   const [content, setContent] = useState("");
+  const [title, setTitle] = useState("");
   const problemSetId = params.id as string;
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedProblems, setEditedProblems] = useState<Problem[]>([]);
 
   useEffect(() => {
+    // 로컬 스토리지에서 문제집 목록 불러오기
+    const savedProblemSets = localStorage.getItem("problemSets");
+    if (savedProblemSets) {
+      const problemSets = JSON.parse(savedProblemSets);
+      const currentProblemSet = problemSets.find(
+        (set: { id: string }) => set.id === problemSetId
+      );
+      if (currentProblemSet) {
+        setTitle(currentProblemSet.title);
+      }
+    }
+
     // 로컬 스토리지에서 내용 불러오기
     const savedContent = localStorage.getItem(problemSetId);
     if (savedContent) {
@@ -29,8 +44,14 @@ export default function ProblemSetDetailPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">
-          {problemSetId === "data1" ? "Data1" : "Data2"}
+        <h1 className="text-2xl font-bold mb-6">
+          {problemSetId === "data1"
+            ? "Data1"
+            : problemSetId === "data2"
+            ? "Data2"
+            : problemSetId === "data3"
+            ? "難易度中"
+            : "성서인물"}
         </h1>
         <div className="space-x-2">
           <button
